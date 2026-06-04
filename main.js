@@ -213,13 +213,13 @@ function startInteraction() {
 
 button.addEventListener("click", startInteraction);
 
-window.addEventListener("pointermove", (event) => {
-    moveCursorTo(event.clientX, event.clientY);
-});
+// window.addEventListener("pointermove", (event) => {
+//     moveCursorTo(event.clientX, event.clientY);
+// });
 
-window.addEventListener("pointerdown", (event) => {
-    moveCursorTo(event.clientX, event.clientY);
-});
+// window.addEventListener("pointerdown", (event) => {
+//     moveCursorTo(event.clientX, event.clientY);
+// });
 
 placeTargetsRandomly();
 updateCursor();
