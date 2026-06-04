@@ -1,31 +1,67 @@
 const overlay = document.getElementById("motion-overlay");
 const menu = document.getElementById("menu");
 
-async function enableMotionAccess() {
+async function enableAccess() {
     if (!overlay || !menu) return;
 
     try {
-        if (
-            typeof DeviceOrientationEvent !== "undefined" &&
-            typeof DeviceOrientationEvent.requestPermission === "function"
-        ) {
-            const permission = await DeviceOrientationEvent.requestPermission();
-
-            if (permission !== "granted") {
-                alert("Motion access denied.");
-                return;
-            }
-        }
+        await requestMotionAccess();
+        await requestLocationAccess();
 
         localStorage.setItem("motionAccess", "granted");
+        localStorage.setItem("locationAccess", "granted");
 
         overlay.remove();
         menu.classList.add("visible");
     } catch (error) {
         console.error(error);
-        alert("Motion access could not be enabled.");
+        alert(error.message);
     }
 }
 
-overlay?.addEventListener("click", enableMotionAccess);
-overlay?.addEventListener("touchstart", enableMotionAccess, { once: true });
+async function requestMotionAccess() {
+    if (
+        typeof DeviceOrientationEvent !== "undefined" &&
+        typeof DeviceOrientationEvent.requestPermission === "function"
+    ) {
+        const permission = await DeviceOrientationEvent.requestPermission();
+
+        if (permission !== "granted") {
+            throw new Error("Motion access denied.");
+        }
+    }
+}
+
+function requestLocationAccess() {
+    return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+            reject(new Error("Geolocation wird von diesem Browser nicht unterstützt."));
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                localStorage.setItem(
+                    "startLocation",
+                    JSON.stringify({
+                        lat: position.coords.latitude,
+                        lon: position.coords.longitude
+                    })
+                );
+
+                resolve(position);
+            },
+            () => {
+                reject(new Error("Location access denied."));
+            },
+            {
+                enableHighAccuracy: true,
+                maximumAge: 0,
+                timeout: 20000
+            }
+        );
+    });
+}
+
+overlay?.addEventListener("click", enableAccess);
+overlay?.addEventListener("touchstart", enableAccess, { once: true });
