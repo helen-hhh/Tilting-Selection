@@ -1,3 +1,5 @@
+console.log("SCRIPT LOADED");
+
 const articles = [
     {
         title: "Walking and Memory",
@@ -93,6 +95,7 @@ function updateCursor() {
 }
 
 function handleOrientation(event) {
+    console.log(event.gamma, event.beta);
     alert(
         "gamma: " + event.gamma +
         "\n beta: " + event.beta +
@@ -103,6 +106,7 @@ function handleOrientation(event) {
 }
 
 async function startInteraction() {
+    console.log("BUTTON CLICKED");
     alert("Start geklickt");
 
     if (typeof DeviceOrientationEvent === "undefined") {
