@@ -1,15 +1,15 @@
 const articles = [
     {
-        title: "Walking and Memory",
-        preview: "Ein Text darüber, wie Bewegung Erinnerungen aktiviert."
+        title: "Creativity",
+        preview: "Ein Essay darüber, wie Bewegung kreative Prozesse beeinflusst."
     },
     {
-        title: "Walking and Knowledge",
+        title: "Knowledge Production",
         preview: "Ein Artikel über Gehen als Methode der Erkenntnisproduktion."
     },
     {
-        title: "Walking and Creativity",
-        preview: "Ein Essay darüber, wie Bewegung kreative Prozesse beeinflusst."
+        title: "Bodies in the digital age",
+        preview: "Ein Essay darüber, wie sich das Verhältnis zu unseren Körper im digitalen Zeitalter verschiebt."
     }
 ];
 
