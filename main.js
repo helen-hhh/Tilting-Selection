@@ -93,33 +93,46 @@ function updateCursor() {
 }
 
 function handleOrientation(event) {
-    const tiltX = event.gamma || 0;
-    const tiltY = event.beta || 0;
+    alert(
+        "gamma: " + event.gamma +
+        "\n beta: " + event.beta +
+        "\n alpha: " + event.alpha
+    );
 
-    vx += tiltX * 0.02;
-    vy += tiltY * 0.02;
-
-    vx *= 0.92;
-    vy *= 0.92;
+    window.removeEventListener("deviceorientation", handleOrientation);
 }
 
 async function startInteraction() {
-    if (
-        typeof DeviceOrientationEvent !== "undefined" &&
-        typeof DeviceOrientationEvent.requestPermission === "function"
-    ) {
-        const permission = await DeviceOrientationEvent.requestPermission();
+    alert("Start geklickt");
 
-        if (permission !== "granted") {
-            alert("Bewegungssensor wurde nicht erlaubt.");
+    if (typeof DeviceOrientationEvent === "undefined") {
+        alert("DeviceOrientationEvent existiert nicht.");
+        return;
+    }
+
+    if (typeof DeviceOrientationEvent.requestPermission === "function") {
+        try {
+            const permission = await DeviceOrientationEvent.requestPermission();
+            alert("Permission: " + permission);
+
+            if (permission !== "granted") {
+                alert("Bewegungssensor nicht erlaubt.");
+                return;
+            }
+        } catch (error) {
+            alert("Permission-Fehler: " + error.message);
             return;
         }
+    } else {
+        alert("Keine Permission-Abfrage nötig.");
     }
 
     tiltEnabled = true;
     window.addEventListener("deviceorientation", handleOrientation);
 
     start.style.display = "none";
+
+    alert("Tilt aktiviert");
 }
 
 function checkTargets() {
