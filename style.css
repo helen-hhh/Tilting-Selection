@@ -20,8 +20,8 @@ body {
 
 .target {
     position: absolute;
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
     border: 2px solid #111;
     border-radius: 50%;
     transform: translate(-50%, -50%);
@@ -84,4 +84,41 @@ body {
     width: 0%;
     margin-top: 0.8rem;
     transition: width 0.1s linear;
+}
+
+#motion-overlay {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+
+    z-index: 9999;
+
+    text-align: center;
+    cursor: pointer;
+}
+
+.overlay-content h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+.overlay-content p {
+    margin-top: 0.75rem;
+    opacity: 0.6;
+}
+
+#menu {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#menu.visible {
+    opacity: 1;
 }
