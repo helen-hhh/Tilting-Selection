@@ -197,37 +197,65 @@ async function requestPermissions() {
     permissionStatus.textContent = "Berechtigungen werden angefragt …";
 
     try {
-        if (typeof DeviceMotionEvent !== "undefined" &&
-            typeof DeviceMotionEvent.requestPermission === "function") {
-            await DeviceMotionEvent.requestPermission();
+        if (
+            typeof DeviceMotionEvent !== "undefined" &&
+            typeof DeviceMotionEvent.requestPermission === "function"
+        ) {
+            const motionPermission = await DeviceMotionEvent.requestPermission();
+
+            if (motionPermission !== "granted") {
+                throw new Error("Motion access denied.");
+            }
         }
 
-        if (typeof DeviceOrientationEvent !== "undefined" &&
-            typeof DeviceOrientationEvent.requestPermission === "function") {
-            await DeviceOrientationEvent.requestPermission();
+        if (
+            typeof DeviceOrientationEvent !== "undefined" &&
+            typeof DeviceOrientationEvent.requestPermission === "function"
+        ) {
+            const orientationPermission = await DeviceOrientationEvent.requestPermission();
+
+            if (orientationPermission !== "granted") {
+                throw new Error("Orientation access denied.");
+            }
         }
 
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(
-                () => {
+                (position) => {
+                    localStorage.setItem("motionAccess", "granted");
+                    localStorage.setItem("locationAccess", "granted");
+
+                    localStorage.setItem(
+                        "startLocation",
+                        JSON.stringify({
+                            lat: position.coords.latitude,
+                            lon: position.coords.longitude
+                        })
+                    );
+
                     permissionOverlay.classList.remove("is-visible");
                     startCoverWalk();
                 },
                 () => {
-                    permissionStatus.textContent = "Standort konnte nicht gelesen werden. Für den LoFi-Prototyp kannst du trotzdem fortfahren.";
-                    permissionOverlay.classList.remove("is-visible");
-                    startCoverWalk();
+                    permissionStatus.textContent =
+                        "Standort konnte nicht gelesen werden. Bitte erlaube den Standortzugriff auf der Startseite.";
+
+                    localStorage.removeItem("locationAccess");
                 },
-                { enableHighAccuracy: true, timeout: 8000 }
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 20000
+                }
             );
         } else {
-            permissionOverlay.classList.remove("is-visible");
-            startCoverWalk();
+            throw new Error("Geolocation wird von diesem Browser nicht unterstützt.");
         }
     } catch (error) {
-        permissionStatus.textContent = "Berechtigungen konnten nicht vollständig angefragt werden. Der LoFi-Prototyp läuft trotzdem.";
-        permissionOverlay.classList.remove("is-visible");
-        startCoverWalk();
+        console.error(error);
+
+        permissionStatus.textContent =
+            "Berechtigungen konnten nicht vollständig angefragt werden. Bitte gehe zurück zur Startseite und erlaube den Zugriff dort.";
     }
 }
 
@@ -294,4 +322,14 @@ function handleClick(event) {
 }
 
 document.addEventListener("click", handleClick);
-showScreen("cover");
+
+const hasAccess =
+    localStorage.getItem("motionAccess") === "granted" &&
+    localStorage.getItem("locationAccess") === "granted";
+
+if (hasAccess) {
+    permissionOverlay?.remove();
+    startCoverWalk();
+} else {
+    permissionOverlay?.classList.add("is-visible");
+}
