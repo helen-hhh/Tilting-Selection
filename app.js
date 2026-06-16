@@ -247,10 +247,9 @@ function setGlobalCompassTitle(text = "") {
 }
 
 function setCompassInstruction(text = "") {
-    const instruction = document.querySelector(".compass-instruction");
-
-    console.log("Instruction gefunden:", instruction);
-    console.log("Neuer Text:", text);
+    const instruction = document.querySelector(
+        '[data-screen="calibration-compass"] .compass-instruction'
+    );
 
     if (instruction) {
         instruction.textContent = text;
@@ -459,6 +458,13 @@ function updateCompassLockState(options, elements) {
 
         elements.dots[compassLockedOption.key].classList.add("is-locked");
         setGlobalCompassTitle(compassLockedOption.title);
+
+        if (state.screen === "calibration-compass") {
+            setCompassInstruction(
+                "Diese Option ist jetzt ausgewählt – gehe 10m geradeaus, um deine Auswahl zu bestätigen."
+            );
+        }
+
         return;
     }
 
@@ -467,6 +473,7 @@ function updateCompassLockState(options, elements) {
     if (!optionInsideTarget) {
         compassHoveredOption = null;
         compassHoverStartTime = null;
+
         setGlobalCompassTitle("");
 
         if (state.screen === "calibration-compass") {
@@ -478,6 +485,12 @@ function updateCompassLockState(options, elements) {
 
     elements.dots[optionInsideTarget.key].classList.add("is-active");
     setGlobalCompassTitle(optionInsideTarget.title);
+
+    if (state.screen === "calibration-compass") {
+        setCompassInstruction(
+            "Diese Option ist jetzt ausgewählt – gehe 10m geradeaus, um deine Auswahl zu bestätigen."
+        );
+    }
 
     if (compassHoveredOption !== optionInsideTarget) {
         compassHoveredOption = optionInsideTarget;
