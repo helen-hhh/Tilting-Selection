@@ -247,9 +247,10 @@ function setGlobalCompassTitle(text = "") {
 }
 
 function setCompassInstruction(text = "") {
-    const instruction = document.querySelector(
-        `[data-screen="${state.screen}"] .compass-instruction`
-    );
+    const instruction = document.querySelector(".compass-instruction");
+
+    console.log("Instruction gefunden:", instruction);
+    console.log("Neuer Text:", text);
 
     if (instruction) {
         instruction.textContent = text;
