@@ -61,7 +61,8 @@ h2 {
     font-size: 0.8rem !important;
     opacity: 0.7;
     text-align: center;
-    padding-top: 2rem;
+    position: absolute;
+    bottom: 3rem;
 }
 
 /* Buttons */
@@ -208,7 +209,6 @@ button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100dvh;
 }
 
 .compass-screen>.eyebrow,
@@ -219,12 +219,13 @@ button:hover {
 }
 
 .compass-container {
-    position: relative;
+    position: absolute;
     display: flex;
     flex-direction: column;
 
+    top: 3.5rem;
     width: 85vw;
-    height: 70dvh;
+    height: 70vh;
     margin: 0 auto;
 }
 
