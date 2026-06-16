@@ -22,8 +22,8 @@ body {
 
 .screen {
     display: none;
-    height: 100dvh;
-    padding: 3.8rem 1rem 1rem;
+    height: 100vh;
+    padding: 1rem;
 }
 
 .screen.is-active {
@@ -31,6 +31,7 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    padding: 3.8rem 1rem 1rem;
 }
 
 .screen h1 {
@@ -61,8 +62,7 @@ h2 {
     font-size: 0.8rem !important;
     opacity: 0.7;
     text-align: center;
-    position: absolute;
-    bottom: 3rem;
+    padding-top: 2rem;
 }
 
 /* Buttons */
@@ -205,10 +205,15 @@ button:hover {
 
 /* Compass Screens */
 
+.compass-screen {
+    padding: 0;
+}
+
 .compass-screen.is-active {
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100dvh;
 }
 
 .compass-screen>.eyebrow,
@@ -219,13 +224,11 @@ button:hover {
 }
 
 .compass-container {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
+    position: relative;
 
-    top: 3.5rem;
     width: 85vw;
-    height: 70vh;
+    height: calc(100dvh - 3.8rem - 4rem);
+    max-height: 70vh;
     margin: 0 auto;
 }
 
