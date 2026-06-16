@@ -55,7 +55,7 @@ function showScreen(name) {
                 { key: "south", title: "Auswahl 3" },
                 { key: "west", title: "Auswahl 4" }
             ],
-            onLock: () => {
+            onConfirm: () => {
                 showScreen("calibration-page-turn");
             }
         });
@@ -69,16 +69,14 @@ function showScreen(name) {
                 { key: "south", title: "500 m", value: 500 },
                 { key: "west", title: "1 km", value: 1000 }
             ],
-            onLock: (option) => {
+            onConfirm: (option) => {
                 state.selectedDistance = option.value;
 
-                setTimeout(() => {
-                    startWalkGoal(50, () => {
-                        renderArticle(READER_CONTENT.introArticle, {
-                            eyebrow: "Einleitung"
-                        });
-                    }, "Gehe 50m bis zur ersten Seite.");
-                }, 800);
+                startWalkGoal(50, () => {
+                    renderArticle(READER_CONTENT.introArticle, {
+                        eyebrow: "Einleitung"
+                    });
+                }, "Gehe 50m bis zur ersten Seite.");
             }
         });
     }
@@ -309,8 +307,10 @@ let compassHoveredOption = null;
 let compassHoverStartTime = null;
 let compassLockedOption = null;
 let compassLockHeading = null;
+let compassConfirmedOption = null;
+let compassConfirmStartPosition = null;
 
-const COMPASS_LOCK_DELAY = 5000;
+const COMPASS_LOCK_DELAY = 2000;
 const COMPASS_UNLOCK_ANGLE = 45;
 
 const compassAngles = {
@@ -326,6 +326,8 @@ function startCompassInteraction(config) {
     compassHoverStartTime = null;
     compassLockedOption = null;
     compassLockHeading = null;
+    compassConfirmedOption = null;
+    compassConfirmStartPosition = null;
 
     updateCompass();
 }
@@ -408,6 +410,64 @@ function compassAngleDifference(a, b) {
     return diff;
 }
 
+function getDistanceFromStartLocation() {
+    const stored = localStorage.getItem("startLocation");
+
+    if (!stored || !navigator.geolocation) return;
+
+    const start = JSON.parse(stored);
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const distance = getDistanceInMeters(
+                start.lat,
+                start.lon,
+                position.coords.latitude,
+                position.coords.longitude
+            );
+
+            if (
+                compassLockedOption &&
+                compassActiveConfig &&
+                distance >= 10
+            ) {
+                const confirmedOption = compassLockedOption;
+
+                compassConfirmedOption = confirmedOption;
+
+                if (typeof compassActiveConfig.onConfirm === "function") {
+                    compassActiveConfig.onConfirm(confirmedOption);
+                }
+            }
+        },
+        () => { },
+        {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 5000
+        }
+    );
+}
+
+function getDistanceInMeters(lat1, lon1, lat2, lon2) {
+    const R = 6371000;
+    const toRad = (value) => value * Math.PI / 180;
+
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+}
+
 function clearCompassDotStates(elements) {
     Object.values(elements.dots).forEach((dot) => {
         dot.classList.remove("is-active");
@@ -439,6 +499,9 @@ function updateCompassLockState(options, elements) {
             compassLockHeading = null;
             compassHoveredOption = null;
             compassHoverStartTime = null;
+            compassConfirmedOption = null;
+
+            localStorage.removeItem("compassConfirmStartLocation");
 
             setGlobalCompassTitle("");
 
@@ -459,6 +522,7 @@ function updateCompassLockState(options, elements) {
             );
         }
 
+        checkCompassConfirmationByDistance();
         return;
     }
 
@@ -506,9 +570,7 @@ function updateCompassLockState(options, elements) {
 
         setGlobalCompassTitle(compassLockedOption.title);
 
-        if (typeof compassActiveConfig.onLock === "function") {
-            compassActiveConfig.onLock(compassLockedOption);
-        }
+        saveCompassConfirmStartLocation();
     }
 }
 
@@ -523,6 +585,62 @@ function updateCompass() {
     }
 
     updateCompassLockState(options, elements);
+}
+
+function saveCompassConfirmStartLocation() {
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            localStorage.setItem(
+                "compassConfirmStartLocation",
+                JSON.stringify({
+                    lat: position.coords.latitude,
+                    lon: position.coords.longitude
+                })
+            );
+        },
+        () => { },
+        {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 5000
+        }
+    );
+}
+
+function checkCompassConfirmationByDistance() {
+    if (!navigator.geolocation || !compassLockedOption || compassConfirmedOption) return;
+
+    const stored = localStorage.getItem("compassConfirmStartLocation");
+    if (!stored) return;
+
+    const start = JSON.parse(stored);
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const distance = getDistanceInMeters(
+                start.lat,
+                start.lon,
+                position.coords.latitude,
+                position.coords.longitude
+            );
+
+            if (distance >= 10) {
+                compassConfirmedOption = compassLockedOption;
+
+                if (typeof compassActiveConfig.onConfirm === "function") {
+                    compassActiveConfig.onConfirm(compassConfirmedOption);
+                }
+            }
+        },
+        () => { },
+        {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 5000
+        }
+    );
 }
 
 function handleOrientation(event) {

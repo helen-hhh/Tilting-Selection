@@ -35,7 +35,7 @@ body {
 }
 
 .screen h1 {
-    font-size: 4rem;
+    font-size: 3rem;
     line-height: 0.95;
     margin: 0.3em 0;
     hyphens: auto;
@@ -227,6 +227,14 @@ button:hover {
 
     padding: 0;
     transform: translateX(-50%);
+}
+
+.compass-question {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90vw;
 }
 
 /* globale Nav-Bar */
