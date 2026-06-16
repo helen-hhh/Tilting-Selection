@@ -32,6 +32,8 @@ const categoryIntro = document.querySelector("#categoryIntro");
 const categoryCompassTitle = document.querySelector("#categoryCompassTitle");
 const categoryArticleOptions = document.querySelector("#categoryArticleOptions");
 
+const globalCategoryTitle = document.querySelector(".nav-bar .category-title h2");
+
 function showScreen(name) {
     state.screen = name;
 
@@ -40,6 +42,8 @@ function showScreen(name) {
     });
 
     globalStatus.textContent = `Aktueller Screen: ${name}`;
+
+    setGlobalCompassTitle("");
 
     if (name === "calibration-compass") {
         startCompassInteraction({
@@ -230,6 +234,12 @@ function renderMainToc() {
     });
 }
 
+function setGlobalCompassTitle(text = "") {
+    if (globalCategoryTitle) {
+        globalCategoryTitle.textContent = text;
+    }
+}
+
 function selectCategory(categoryId) {
     const category = findCategory(categoryId);
     if (!category) return;
@@ -321,7 +331,6 @@ function getActiveCompassElements() {
         container,
         oval: container.querySelector(".compass-oval"),
         target: container.querySelector(".target-compass"),
-        title: container.querySelector(".category-title h2"),
         dots: {
             north: container.querySelector(".dot-north"),
             east: container.querySelector(".dot-east"),
@@ -420,14 +429,14 @@ function updateCompassLockState(options, elements) {
             compassLockHeading = null;
             compassHoveredOption = null;
             compassHoverStartTime = null;
-            elements.title.textContent = "";
+            setGlobalCompassTitle("");
 
             options.forEach((option) => placeCompassDot(option, elements));
             return;
         }
 
         elements.dots[compassLockedOption.key].classList.add("is-locked");
-        elements.title.textContent = compassLockedOption.title;
+        setGlobalCompassTitle(optionInsideTarget.title);
         return;
     }
 
@@ -436,7 +445,7 @@ function updateCompassLockState(options, elements) {
     if (!optionInsideTarget) {
         compassHoveredOption = null;
         compassHoverStartTime = null;
-        elements.title.textContent = "";
+        setGlobalCompassTitle("");
         return;
     }
 
@@ -461,7 +470,7 @@ function updateCompassLockState(options, elements) {
         elements.dots[compassLockedOption.key].classList.remove("is-active");
         elements.dots[compassLockedOption.key].classList.add("is-locked");
 
-        elements.title.textContent = compassLockedOption.title;
+        setGlobalCompassTitle(optionInsideTarget.title);
 
         if (typeof compassActiveConfig.onLock === "function") {
             compassActiveConfig.onLock(compassLockedOption);
