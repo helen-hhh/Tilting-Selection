@@ -2,13 +2,13 @@
 <html lang="de">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Walking Reader – LoFi Prototype</title>
-    <link rel="stylesheet" href="lofi.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walking Reader – LoFi</title>
 
-    <script src="content.js" defer></script>
-    <script src="app.js" defer></script>
+    <link rel="stylesheet" href="lofi.css">
+    <script defer src="content.js"></script>
+    <script defer src="app.js"></script>
 </head>
 
 <body>
@@ -28,14 +28,16 @@
 
     <main id="app">
 
-        <section data-screen="cover" class="screen is-active">
+        <section data-screen="cover" class="screen">
             <p class="eyebrow">Cover</p>
             <h1>FOOTNOTES</h1>
             <p>Gehe 50 Meter, um den Reader zu öffnen.</p>
+
             <div class="meter-display">
                 <span id="coverMeters">50</span> m
             </div>
-            <button data-action="simulate-walk" data-target="50">+ 10m gehen</button>
+
+            <button data-action="simulate-walk">+ 10m gehen</button>
         </section>
 
         <section data-screen="calibration-intro" class="screen">
@@ -49,19 +51,19 @@
             <p class="eyebrow">Kalibrierung 1/3</p>
             <h1>Kompassinteraktion</h1>
             <p>Richte dein Handy in eine Himmelsrichtung, um eine Option auszuwählen.</p>
+
             <div class="compass-lofi">
-                <button data-action="compass-select" data-value="north">100m</button>
-                <button data-action="compass-select" data-value="east">200m</button>
-                <button data-action="compass-select" data-value="south">500m</button>
-                <button data-action="compass-select" data-value="west">1km</button>
+                <button data-action="compass-select">Norden</button>
+                <button data-action="compass-select">Osten</button>
+                <button data-action="compass-select">Süden</button>
+                <button data-action="compass-select">Westen</button>
             </div>
-            <p class="hint">LoFi: Tippe eine Option an.</p>
         </section>
 
         <section data-screen="calibration-page-turn" class="screen">
             <p class="eyebrow">Kalibrierung 2/3</p>
             <h1>Umblättern</h1>
-            <p>Später blätterst du durch eine große Kreisbewegung mit dem Daumen weiter.</p>
+            <p>Später blätterst du durch eine Kreisbewegung mit dem Daumen weiter.</p>
             <button data-action="next" data-next="calibration-shake">Umblättern simulieren</button>
         </section>
 
@@ -75,6 +77,7 @@
         <section data-screen="distance-select" class="screen">
             <p class="eyebrow">Distanz wählen</p>
             <h1>Wie weit möchtest du zwischen Artikeln gehen?</h1>
+
             <div class="distance-grid">
                 <button data-action="set-distance" data-distance="100">100 m</button>
                 <button data-action="set-distance" data-distance="200">200 m</button>
@@ -84,17 +87,21 @@
         </section>
 
         <section data-screen="walk-transition" class="screen">
-            <p class="eyebrow" id="walkTransitionLabel">Laufpause</p>
+            <p class="eyebrow">Laufpause</p>
             <h1 id="walkTransitionTitle">Gehe weiter.</h1>
+
             <div class="walking-animation" id="walkingAnimation"></div>
+
             <p>Noch <span id="transitionMeters">50</span> m</p>
-            <button data-action="simulate-walk" data-target="transition">+ 10m gehen</button>
+            <button data-action="simulate-walk">+ 10m gehen</button>
         </section>
 
         <section data-screen="article-reader" class="screen article-screen">
             <p class="eyebrow" id="articleEyebrow">Artikel</p>
             <h1 id="articleTitle"></h1>
+
             <article id="articlePage"></article>
+
             <div class="reader-controls">
                 <p>Seite <span id="pageCurrent">1</span> / <span id="pageTotal">1</span></p>
                 <button data-action="page-turn">Umblättern simulieren</button>
@@ -125,6 +132,7 @@
     <div class="bottom-progress">
         <span id="globalStatus">LoFi-Prototyp</span>
     </div>
+
 </body>
 
 </html>

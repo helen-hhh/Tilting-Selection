@@ -323,13 +323,6 @@ function handleClick(event) {
 
 document.addEventListener("click", handleClick);
 
-const hasAccess =
-    localStorage.getItem("motionAccess") === "granted" &&
-    localStorage.getItem("locationAccess") === "granted";
+showScreen("cover");
 
-if (hasAccess) {
-    permissionOverlay?.remove();
-    startCoverWalk();
-} else {
-    permissionOverlay?.classList.add("is-visible");
-}
+permissionOverlay?.classList.add("is-visible");
