@@ -56,13 +56,7 @@ function showScreen(name) {
                 { key: "west", title: "Auswahl 4" }
             ],
             onLock: () => {
-                setCompassInstruction(
-                    "Diese Option ist jetzt ausgewählt – gehe 10m geradeaus, um deine Auswahl zu bestätigen."
-                );
-
-                startWalkGoal(10, () => {
-                    showScreen("calibration-page-turn");
-                }, "Gehe 10m geradeaus, um deine Auswahl zu bestätigen.");
+                showScreen("calibration-page-turn");
             }
         });
     }
@@ -316,7 +310,7 @@ let compassHoverStartTime = null;
 let compassLockedOption = null;
 let compassLockHeading = null;
 
-const COMPASS_LOCK_DELAY = 2000;
+const COMPASS_LOCK_DELAY = 5000;
 const COMPASS_UNLOCK_ANGLE = 45;
 
 const compassAngles = {
