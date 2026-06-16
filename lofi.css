@@ -30,8 +30,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-
     text-align: center;
     padding-bottom: 10rem;
 }
@@ -230,7 +228,7 @@ button:hover {
     flex-direction: column;
 
     width: 85vw;
-    height: 85vh;
+    height: 70vh;
     margin: 0 auto;
 }
 
